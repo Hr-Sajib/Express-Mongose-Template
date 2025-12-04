@@ -5,11 +5,17 @@ import config from "../../config";
 
 const userSchema = new Schema<IUser>(
   {
-    userName: {
+    firstName: {
       type: String,
       required: true,
       trim: true,
     },
+    lastName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
     email: {
       type: String,
       required: true,
@@ -17,43 +23,42 @@ const userSchema = new Schema<IUser>(
       lowercase: true,
       trim: true,
     },
+
     password: {
       type: String,
       required: true,
     },
-    phone: {
+
+    signInMethod: {
       type: String,
+      enum: ["password", "google"],
       required: true,
     },
-    isVerified:{
-      type: Boolean,
-      default: false
+
+    googleToken: {
+      type: String,
+      default: "",
     },
+
     role: {
       type: String,
       enum: Object.values(UserRole),
       default: UserRole.USER,
     },
-    
-    otp: {
-      otpCode: {
-        type: Number,
-        default: null
-      },
-      otpExpireTime: {
-        type: String,
-        default: null
-      },
+
+    isVerified: {
+      type: Boolean,
+      default: false,
     },
 
     passwordResetOtp: {
       otpCode: {
         type: Number,
-        default: null
+        default: null,
       },
       otpExpireTime: {
         type: String,
-        default: null
+        default: null,
       },
     },
 
@@ -61,13 +66,63 @@ const userSchema = new Schema<IUser>(
       type: Boolean,
       default: false,
     },
+
+    // ====== BUSINESS FIELDS ======
+    strength: {
+      type: String,
+      default: "",
+    },
+    improvement: {
+      type: String,
+      default: "",
+    },
+    pattern: {
+      type: String,
+      default: "",
+    },
+
+    // ====== SETTINGS ======
+    emailNotification: {
+      type: Boolean,
+      default: true,
+    },
+    meetingReminder: {
+      type: Boolean,
+      default: true,
+    },
+    aiInsight: {
+      type: Boolean,
+      default: true,
+    },
+
+    salesMethodology: {
+      type: String,
+      enum: [
+        "bant",
+        "meddic",
+        "meddpicc",
+        "spin",
+        "solutionSelling",
+        "valueSelling",
+        "challengerSales",
+      ],
+      default: "bant",
+    },
+
+    difficultyLevel: {
+      type: String,
+      enum: ["hard", "intermediate", "easy"],
+      default: "intermediate",
+    },
   },
   {
     timestamps: true,
   }
 );
 
-// hashing password before saving/creating
+// =======================
+// HASH PASSWORD BEFORE SAVE
+// =======================
 userSchema.pre("save", async function (next) {
   const user = this as IUser;
 
@@ -81,7 +136,9 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-// hashing password before updating (findOneAndUpdate)
+// =========================
+// HASH PASSWORD IN UPDATES
+// =========================
 userSchema.pre("findOneAndUpdate", async function (next) {
   const update = this.getUpdate() as Partial<IUser>;
   if (update && update.password) {

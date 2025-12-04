@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/v1", router);
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Bookish app server running!");
+  res.send("Salesmind server running ...");
 });
 
 app.use(globalErrorHandler);

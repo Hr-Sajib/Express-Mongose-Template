@@ -17,20 +17,16 @@ const loginUser = catchAsync(async (req, res) => {
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
 
-  // access token
-  res.cookie("accessToken", accessToken, {
-    httpOnly: true,
-    secure: config.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: 15 * 60 * 1000, // 15 minutes
-  });
 
 
   sendResponse(res, {
     statusCode: status.OK,
     success: true,
     message: "User logged in successfully!",
-    data: user,
+    data: {
+      accessToken,
+      user
+    },
   });
 
 

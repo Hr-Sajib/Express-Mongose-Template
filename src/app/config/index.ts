@@ -31,6 +31,8 @@ export default {
 
   email_user: process.env.EMAIL_USER,
   gmail_app_password: process.env.GMAIL_APP_PASSWORD,
+
+  open_api_key: process.env.OPENAI_API_KEY,
   
   // smtp_host: process.env.SMTP_HOST,
   // smtp_port: process.env.SMTP_PORT,

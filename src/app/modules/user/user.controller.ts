@@ -22,21 +22,8 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const verifyUser = catchAsync(async (req: Request, res: Response) => {
-  const {email, otp} = req.body;
 
-  const newUser = await userServices.verifyUserFromDB(email, otp);
-
-  sendResponse(res, {
-    statusCode: httpStatus.CREATED,
-    success: true,
-    message: "User verified successfully",
-    data: newUser,
-  });
-});
-
-
-// // Get all users
+// Get all users
 const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   const users = await userServices.getAllUsersFromDB();
 
@@ -78,10 +65,10 @@ const getMe = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// // Update user (except password)
+// Update user (except password)
 const updateUser = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const {email, password, isVerified, isDeleted, role, otp, ...updatableData } = req.body;
+  const {email, password, isVerified, signInMethod, googleToken, isDeleted, role, otp, ...updatableData } = req.body;
   const userEmail = req.user.email;
   const loggedInUserRole = req.user.role;
 
@@ -176,7 +163,7 @@ const resetPasswordWithOTPController = catchAsync(async (req: Request, res: Resp
 
 export const userController = {
   createUser,
-  verifyUser,
+  // verifyUser,
   updateUser,
   // updatePassword,
   softDeleteUser,

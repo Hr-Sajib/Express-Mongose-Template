@@ -13,9 +13,10 @@ const seedUsers = async () => {
 
     const usersToSeed = [
       {
-        email: "admin@bookish.com",
-        userName: "Admin",
-        password: await bcrypt.hash('admin@bookish', Number(config.bcrypt_salt_rounds)),
+        email: "admin@salesmind.com",
+        firstName: "Admin",
+        lastName: "Jr",
+        password: await bcrypt.hash('admin@salesmind', Number(config.bcrypt_salt_rounds)),
         role: "admin",
         isVerified: true
       }

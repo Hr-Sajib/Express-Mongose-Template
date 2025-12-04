@@ -11,86 +11,56 @@ import { email } from "zod";
 // CREATE USER
 // ----------------------------------------------------------------
 const createUserIntoDB = async (payload: IUser & { image?: string }) => {
-  // ✅ Generate OTP
-  const otpCode = Math.floor(1000 + Math.random() * 9000); // 4-digit OTP
-  const otpExpireTime = new Date(Date.now() + 10 * 60 * 1000).toISOString(); // 10 mins later
 
   // ✅ Create user with OTP data
   const newUser = await UserModel.create({
-    ...payload,
-    otp: {
-      otpCode,
-      otpExpireTime,
-    },
+    ...payload, role: 'user'
   });
 
   if (!newUser) {
     throw new AppError(httpStatus.BAD_REQUEST, "Failed to create user!");
   }
 
-  // ✅ Prepare email content
-  const subject = "Welcome to Bookish – Verify Your Email";
-  const text = `Your verification OTP is ${otpCode}. It will expire in 10 minutes.`;
-  const html = `
-    <div style="font-family: Arial, sans-serif; color: #333;">
-      <h2>Welcome to Bookish 👋</h2>
-      <p>Hi ${newUser.userName || "User"},</p>
-      <p>Thank you for registering. Please verify your email using the OTP below:</p>
-      <h3 style="color: #4CAF50; font-size: 24px; letter-spacing: 3px;">${otpCode}</h3>
-      <p>This OTP will expire in <b>10 minutes</b>.</p>
-      <br/>
-      <p>— The Bookish Team</p>
-    </div>
-  `;
-
-  try {
-    await sendMail({
-      to: newUser.email,
-      subject,
-      text,
-      html,
-    });
-    console.log(`✅ OTP email sent successfully to ${newUser.email}`);
-  } catch (error) {
-    console.error("❌ Failed to send OTP email:", error);
-  }
 
   return newUser;
 };
 
 
-const verifyUserFromDB = async (email: string, otp: number)=>{
-  const user = await UserModel.findOne({ email });
-    if (!user) {
-      throw new AppError(httpStatus.NOT_FOUND, 'User not found');
-    }
+// const verifyUserFromDB = async (email: string, otp: number)=>{
+//   const user = await UserModel.findOne({ email });
+//     if (!user) {
+//       throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+//     }
 
-    if (!user.otp.otpCode || !user.otp.otpExpireTime) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'No OTP request found');
-    }
+//     if (!user.otp.otpCode || !user.otp.otpExpireTime) {
+//       throw new AppError(httpStatus.BAD_REQUEST, 'No OTP request found');
+//     }
 
-    const isExpired = new Date() > new Date(user.otp.otpExpireTime);
-    if (isExpired) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'OTP has expired');
-    }
+//     const isExpired = new Date() > new Date(user.otp.otpExpireTime);
+//     if (isExpired) {
+//       throw new AppError(httpStatus.BAD_REQUEST, 'OTP has expired');
+//     }
 
-    if (user.otp.otpCode !== otp) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Invalid OTP code');
-    }
+//     if (user.otp.otpCode !== otp) {
+//       throw new AppError(httpStatus.BAD_REQUEST, 'Invalid OTP code');
+//     }
 
-    // ✅ OTP matched and valid — clear otp and verify user
-    user.isVerified = true;
-    user.otp = { otpCode: null, otpExpireTime: '' };
+//     // ✅ OTP matched and valid — clear otp and verify user
+//     user.isVerified = true;
+//     user.otp = { otpCode: null, otpExpireTime: '' };
 
-    await user.save();
+//     await user.save();
 
-    return user;
-}
+//     return user;
+// }
 
 
 // ----------------------------------------------------------------
 // GET ALL USERS (non-deleted)
 // ----------------------------------------------------------------
+
+
+
 const getAllUsersFromDB = async () => {
   const users = await UserModel.find({ isDeleted: false , role: {$ne: 'admin'}}).select("-password");
   return users;
@@ -273,7 +243,7 @@ const resetPasswordWithTokenAndOTP = async (
 // ----------------------------------------------------------------
 export const userServices = {
   createUserIntoDB,
-  verifyUserFromDB,
+  // verifyUserFromDB,
   getAllUsersFromDB,
   getUserByIdFromDB,
   getMeFromDB,

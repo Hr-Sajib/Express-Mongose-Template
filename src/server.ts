@@ -57,7 +57,7 @@ async function bootstrap() {
 const port = Number(config.port) || 5100;
 
 server.listen(port, "0.0.0.0", () => {
-  console.log(`\n🚀 Bookish server running in port ${port}`);
+  console.log(`\n🚀 Salesmind server running in port ${port}`);
 });
 
 

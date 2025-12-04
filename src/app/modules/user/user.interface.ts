@@ -11,26 +11,35 @@ export enum UserRole {
 export interface IUser extends Document {
   _id: Types.ObjectId;
 
-  userName: string
+  firstName: string
+  lastName: string
   email: string;
   password: string;
   role: UserRole;
-
-  phone: string;
-
-  otp: {
-    otpCode: number | null,
-    otpExpireTime: string | null,
-  }
 
   passwordResetOtp: {
     otpCode: number | null,
     otpExpireTime: string | null,
   }
 
+  signInMethod: 'password'|'google'
+  googleToken: string
+
   isVerified: boolean;
 
   createdAt: Date;
   updatedAt: Date;
   isDeleted: boolean
+
+  // business fields 
+  strength: string
+  improvement: string
+  pattern: string
+
+  // settings 
+  emailNotification: boolean
+  meetingReminder: boolean
+  aiInsight: boolean
+  salesMethodology: 'bant'|'meddic'|'meddpicc'|'spin'|'solutionSelling'|'valueSelling'|'challengerSales'
+  difficultyLevel: 'hard'|'intermediate'|'easy'
 }

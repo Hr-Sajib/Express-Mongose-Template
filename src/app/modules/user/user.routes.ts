@@ -9,10 +9,12 @@ import { UserValidations } from "./user.validation";
 const router = Router();
 
 // Create user (public)
-router.post("/", validateRequest(UserValidations.createUserValidationSchema), userController.createUser);
+router.post("/", 
+  // validateRequest(UserValidations.createUserValidationSchema),
+   userController.createUser);
 
 // Verify user with OTP (public)
-router.post("/verifyUser", userController.verifyUser);
+// router.post("/verifyUser", userController.verifyUser);
 
 // Get all users (admin only - uncomment auth if needed)
 router.get(
