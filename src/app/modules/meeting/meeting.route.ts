@@ -3,16 +3,17 @@ import { Router } from "express";
 import auth from "../../middleware/auth";
 import validateRequest from "../../middleware/validateRequest";
 import { meetingController } from "./meeting.controller";
-import { uploadSingleTargetSalesPdf } from "../../utils/fileUploads";
+import { uploadMultipleFiles } from "../../utils/fileUploads";
 
 
 const router = Router();
 
 // Create a new meeting (simulation)
+// routes/meeting.route.ts
 router.post(
   '/',
   auth(),
-  uploadSingleTargetSalesPdf,
+  uploadMultipleFiles, // ← Now accepts multiple files
   meetingController.createMeeting
 );
 

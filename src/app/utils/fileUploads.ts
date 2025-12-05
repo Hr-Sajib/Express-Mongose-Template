@@ -3,14 +3,18 @@ import multer from 'multer';
 
 const storage = multer.memoryStorage();
 
-export const uploadSingleTargetSalesPdf = multer({
+export const uploadMultipleFiles = multer({
   storage,
-  limits: { fileSize: 25 * 1024 * 1024 }, // 25MB
+  limits: { fileSize: 30 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    if (file.mimetype === 'application/pdf') {
-      cb(null, true);
-    } else {
-      cb(new Error('Only PDF allowed'));
-    }
+    const allowed = [
+      'application/pdf',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ];
+    if (allowed.includes(file.mimetype)) cb(null, true);
+    else cb(new Error('Only PDF, PPTX, DOC, DOCX allowed'));
   },
-}).single('targetSalesPdf'); // ← field name in form-data
+}).array('targetSalesFiles', 10);

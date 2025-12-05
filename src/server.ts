@@ -23,7 +23,8 @@ function gracefulShutdown(signal: string) {
   if (server) {
     server.close(() => {
       console.log("HTTP server closed gracefully");
-      mongoose.connection.close()
+      mongoose.connection
+        .close()
         .then(() => {
           console.log("MongoDB connection closed");
           process.exit(0);
@@ -34,7 +35,8 @@ function gracefulShutdown(signal: string) {
         });
     });
   } else {
-    mongoose.connection.close()
+    mongoose.connection
+      .close()
       .then(() => {
         console.log("MongoDB connection closed");
         process.exit(0);
@@ -54,12 +56,11 @@ async function bootstrap() {
     // Create HTTP server
     server = new HttpServer(app);
 
-const port = Number(config.port) || 5100;
+    const port = Number(config.port) || 5100;
 
-server.listen(port, "0.0.0.0", () => {
-  console.log(`\n🚀 Salesmind server running in port ${port}`);
-});
-
+    server.listen(port, "0.0.0.0", () => {
+      console.log(`\n🚀 Salesmind server running in port ${port}`);
+    });
 
     // Listen for termination signals
     process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));

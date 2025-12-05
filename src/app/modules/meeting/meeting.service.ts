@@ -7,7 +7,7 @@ import { MeetingModel } from "./meeting.model";
 import { evaluateMeetingTranscript } from "./meeting.utils";
 
 
-export const createMeeting = async (payload: {
+const createMeeting = async (payload: {
   creatorId: Types.ObjectId | string;
   accountId: Types.ObjectId | string;
   title: string;
